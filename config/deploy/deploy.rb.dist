@@ -20,7 +20,8 @@ set :normalize_asset_timestamps, false
 
 set :shared_children,       [
                                 "node_modules",
-                                "config/config"
+                                "config/config",
+                                "public"
                             ]
 
 namespace :deploy do

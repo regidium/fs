@@ -5,3 +5,6 @@ node_modules
 
 config/config/config.json
 config/deploy/deploy.rb
+config/deploy/deploy.rb
+
+public/*
