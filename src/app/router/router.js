@@ -5,6 +5,7 @@ var self = module.exports = {};
 
 var upload = require('./routes/upload');
 var files = require('./routes/files');
+var del = require('./routes/del');
 
 self.init = function(app) {
     app.post('/upload/:widget_uid/agent/avatar/:agent_uid', multipart, upload.agent_avatar);
@@ -12,4 +13,7 @@ self.init = function(app) {
 
     app.get('/:widget_uid/avatars/:agent_uid/:file_name', files.agent_avatar);
     app.get('/:widget_uid/:file_name', files.widget_logo);
+
+    app.delete('/:widget_uid/avatars/:agent_uid', del.agent_avatar);
+    app.delete('/:widget_uid', del.widget_logo);
 }

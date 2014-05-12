@@ -9,13 +9,13 @@ self.agent_avatar = function (req, res) {
         if (exists) {
             var img = fs.readFileSync(file_path);
         } else {
-            var img = fs.readFileSync(__dirname + '/../../../../public/static/avatar.jpg');
+            var img = fs.readFileSync(__dirname + '/../../../../public/static/avatar.png');
         }
 
         // @todo Попробовать
         //res.attachment('path/to/logo.png');
 
-        res.writeHead(200, {'Content-Type': 'image/jpg' });
+        res.writeHead(200, {'Content-Type': 'image/png' });
         res.end(img, 'binary');
     });
 };
@@ -30,7 +30,7 @@ self.widget_logo = function (req, res) {
             var img = fs.readFileSync(__dirname + '/../../../../public/static/logo.png');
         }
 
-        res.writeHead(200, {'Content-Type': 'image/jpg' });
+        res.writeHead(200, {'Content-Type': 'image/png' });
         res.end(img, 'binary');
     });
 };

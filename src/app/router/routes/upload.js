@@ -16,32 +16,28 @@ self.agent_avatar = function (req, res) {
 
             return res.send({ errors: ['Error in process save file'] });
         } else {
-            im.identify(req.files.file.path, function(err, features) {
-                var format = features.format.toLowerCase();
+            fs.exists(path, function (exists) {
+                var file_path = path + '/avatar.png';
 
-                fs.exists(path, function (exists) {
-                    var file_path = path + '/avatar.' + format;
-
-                    if (!exists) {
-                        mkdirs(path, function() {
-                            fs.writeFile(file_path, data, function (err) {
-                                if (!err) {
-                                    return res.send({ url: config.server.url + req.params.widget_uid + '/avatars/' + req.params.agent_uid + '/avatar.' + format });
-                                } else {
-                                    return res.send({ errors: [err] });
-                                }
-                            });
-                        })
-                    } else {
+                if (!exists) {
+                    mkdirs(path, function() {
                         fs.writeFile(file_path, data, function (err) {
                             if (!err) {
-                                return res.send({ url: config.server.url + req.params.widget_uid + '/avatars/' + req.params.agent_uid + '/avatar.' + format });
+                                return res.send({ url: config.server.url + req.params.widget_uid + '/avatars/' + req.params.agent_uid + '/avatar.png' });
                             } else {
                                 return res.send({ errors: [err] });
                             }
                         });
-                    }
-                });
+                    })
+                } else {
+                    fs.writeFile(file_path, data, function (err) {
+                        if (!err) {
+                            return res.send({ url: config.server.url + req.params.widget_uid + '/avatars/' + req.params.agent_uid + '/avatar.png' });
+                        } else {
+                            return res.send({ errors: [err] });
+                        }
+                    });
+                }
             });
         }
     });
@@ -60,32 +56,28 @@ self.widget_logo = function (req, res) {
 
             return res.send({ errors: ['Error in process save file'] });
         } else {
-            im.identify(req.files.file.path, function(err, features) {
-                var format = features.format.toLowerCase();
+            fs.exists(path, function (exists) {
+                var file_path = path + '/logo.png';
 
-                fs.exists(path, function (exists) {
-                    var file_path = path + '/logo.' + format;
-
-                    if (!exists) {
-                        mkdirs(path, function() {
-                            fs.writeFile(file_path, data, function (err) {
-                                if (!err) {
-                                    return res.send({ url: config.server.url + req.params.widget_uid + '/logo.' + format });
-                                } else {
-                                    return res.send({ errors: [err] });
-                                }
-                            });
-                        })
-                    } else {
+                if (!exists) {
+                    mkdirs(path, function() {
                         fs.writeFile(file_path, data, function (err) {
                             if (!err) {
-                                return res.send({ url: config.server.url + req.params.widget_uid + '/logo.' + format });
+                                return res.send({ url: config.server.url + req.params.widget_uid + '/logo.png' });
                             } else {
                                 return res.send({ errors: [err] });
                             }
                         });
-                    }
-                });
+                    })
+                } else {
+                    fs.writeFile(file_path, data, function (err) {
+                        if (!err) {
+                            return res.send({ url: config.server.url + req.params.widget_uid + '/logo.png' });
+                        } else {
+                            return res.send({ errors: [err] });
+                        }
+                    });
+                }
             });
         }
     });
@@ -106,13 +98,13 @@ function mkdirs(path, callback){
                         cb(new Error('notfound'));
                     } else {
                         tryDirectory(dir.substr(0, dir.lastIndexOf('/')), function(err){
-                            if (err) { //error, return
+                            if (err) {
                                 cb(err);
-                            } else { //make this directory
+                            } else {
                                 console.log(dir);
                                 fs.mkdir(dir, function (error) {
                                     if (error && error.errno != 17) {
-                                        console.log("Failed to make " + dir);
+                                        console.log('Failed to make ' + dir);
                                         return cb(new Error('failed'));
                                     } else {
                                         cb();
@@ -126,9 +118,9 @@ function mkdirs(path, callback){
                     cb(err);
                 }
             } else {
-                if (stat.isDirectory()) { //directory exists, no need to check previous directories
+                if (stat.isDirectory()) {
                     cb();
-                } else { //file exists at location, cannot make folder
+                } else {
                     return cb(new Error('exists'));
                 }
             }
