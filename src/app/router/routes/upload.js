@@ -10,10 +10,11 @@ self.agent_avatar = function (req, res) {
         var image_name = req.files.file.name;
 
         var path = __dirname + '/../../../../public/files/' + req.params.widget_uid + '/avatars/' + req.params.agent_uid;
-        var exists = fs.existsSync(path);
-        if (exists) {
-            fs.unlinkSync(path);
-        }
+        // @todo Удалять потомков
+        // var exists = fs.existsSync(path);
+        // if (exists) {
+        //     fs.unlinkSync(path);
+        // }
 
         if (!image_name) {
             console.log('Error in process save file');
