@@ -45,6 +45,7 @@
         "method-override": "1.x",
         "connect-multiparty": "1.0.x",
         "morgan": "1.x",
+        "path": "0.4.x",
         "underscore": "1.5.x",
         "imagemagick": "0.1.x",
         "p3p": "x"
