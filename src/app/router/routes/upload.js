@@ -10,6 +10,7 @@ self.agent_avatar = function (req, res) {
         var image_name = req.files.file.name;
 
         var path = __dirname + '/../../../../public/files/' + req.params.widget_uid + '/avatars/' + req.params.agent_uid;
+        deleteRecursiveSync(path);
         // @todo Удалять потомков
         // var exists = fs.existsSync(path);
         // if (exists) {
@@ -55,6 +56,7 @@ self.widget_logo = function (req, res) {
         var image_name = req.files.file.name;
 
         var path = __dirname + '/../../../../public/files/' + req.params.widget_uid;
+        deleteRecursiveSync(path);
         // @todo Удалять потомков
         // var exists = fs.existsSync(path);
         // if (exists) {
@@ -139,5 +141,16 @@ function mkdirs(path, callback){
 
     tryDirectory(path, callback);
 };
+
+function deleteRecursiveSync(itemPath) {
+    if (fs.statSync(itemPath).isDirectory()) {
+        _.each(fs.readdirSync(itemPath), function(childItemName) {
+            deleteRecursiveSync(path.join(itemPath, childItemName));
+        });
+        fs.rmdirSync(itemPath);
+    } else {
+        fs.unlinkSync(itemPath);
+    }
+}
 
 return self;
