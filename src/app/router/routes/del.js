@@ -1,11 +1,13 @@
-var fs = require('fs');
+var fs     = require('fs');
+var path   = require('path');
+var _      = require('underscore');
 
 var self = module.exports = {};
 
 self.agent_avatar = function (req, res) {
     var path = __dirname + '/../../../../public/files/' + req.params.widget_uid + '/avatars/' + req.params.agent_uid;
 
-    // @todo удалять всех потомков
+    deleteRecursiveSync(path);
     fs.exists(path, function (exists) {
         if (exists) {
             fs.unlink(path, function() {
