@@ -1,4 +1,5 @@
 var fs     = require('fs');
+var _     = require('underscore');
 var im     = require('imagemagick');
 var config = require('../../../../config/config/config.json');
 
