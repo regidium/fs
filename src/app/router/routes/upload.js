@@ -137,7 +137,7 @@ function mkdirs(path, callback){
 };
 
 function deleteRecursiveSync(itemPath) {
-    if (fs.existsSync(path)) {
+    if (fs.existsSync(itemPath)) {
         if (fs.statSync(itemPath).isDirectory()) {
             _.each(fs.readdirSync(itemPath), function(childItemName) {
                 deleteRecursiveSync(path.join(itemPath, childItemName));
