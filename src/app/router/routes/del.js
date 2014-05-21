@@ -33,4 +33,17 @@ self.widget_logo = function (req, res) {
     });
 };
 
+function deleteRecursiveSync(itemPath) {
+    if (fs.existsSync(itemPath)) {
+        if (fs.statSync(itemPath).isDirectory()) {
+            _.each(fs.readdirSync(itemPath), function(childItemName) {
+                deleteRecursiveSync(path.join(itemPath, childItemName));
+            });
+            fs.rmdirSync(itemPath);
+        } else {
+            fs.unlinkSync(itemPath);
+        }
+    }
+}
+
 return self;
