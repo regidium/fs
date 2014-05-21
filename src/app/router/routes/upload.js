@@ -12,12 +12,8 @@ self.agent_avatar = function (req, res) {
         var image_name = req.files.file.name;
 
         var path = __dirname + '/../../../../public/files/' + req.params.widget_uid + '/avatars/' + req.params.agent_uid;
-        deleteRecursiveSync(path);
         // @todo Удалять потомков
-        // var exists = fs.existsSync(path);
-        // if (exists) {
-        //     fs.unlinkSync(path);
-        // }
+        deleteRecursiveSync(path);
 
         if (!image_name) {
             console.log('Error in process save file');
@@ -141,13 +137,15 @@ function mkdirs(path, callback){
 };
 
 function deleteRecursiveSync(itemPath) {
-    if (fs.statSync(itemPath).isDirectory()) {
-        _.each(fs.readdirSync(itemPath), function(childItemName) {
-            deleteRecursiveSync(path.join(itemPath, childItemName));
-        });
-        fs.rmdirSync(itemPath);
-    } else {
-        fs.unlinkSync(itemPath);
+    if (fs.existsSync(path)) {
+        if (fs.statSync(itemPath).isDirectory()) {
+            _.each(fs.readdirSync(itemPath), function(childItemName) {
+                deleteRecursiveSync(path.join(itemPath, childItemName));
+            });
+            fs.rmdirSync(itemPath);
+        } else {
+            fs.unlinkSync(itemPath);
+        }
     }
 }
 
