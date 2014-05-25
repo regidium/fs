@@ -7,7 +7,7 @@ var self = module.exports = {};
 self.agent_avatar = function (req, res) {
     var path = __dirname + '/../../../../public/files/' + req.params.widget_uid + '/avatars/' + req.params.agent_uid;
 
-    deleteRecursiveSync(path);
+    deleteDirRecursiveSync(path);
     fs.exists(path, function (exists) {
         if (exists) {
             fs.unlink(path, function() {
@@ -20,9 +20,11 @@ self.agent_avatar = function (req, res) {
 };
 
 self.widget_logo = function (req, res) {
-    var path = __dirname + '/../../../../public/files/' + req.params.widget_uid + '/logo.png';
+    var path = __dirname + '/../../../../public/files/' + req.params.widget_uid;
+    deleteFileByMaskSync(path, /logo?\w+\.png/i);
 
-    fs.exists(file_path, function (exists) {
+    // @todo убрать если удаляется в deleteFileByMaskSync
+    fs.exists(file_path + '/logo.png', function (exists) {
         if (exists) {
             fs.unlink(file_path, function() {
                 return res.send({ success: true });
@@ -33,15 +35,30 @@ self.widget_logo = function (req, res) {
     });
 };
 
-function deleteRecursiveSync(itemPath) {
-    if (fs.existsSync(itemPath)) {
-        if (fs.statSync(itemPath).isDirectory()) {
-            _.each(fs.readdirSync(itemPath), function(childItemName) {
-                deleteRecursiveSync(path.join(itemPath, childItemName));
+function deleteFileByMaskSync(files_path, files_regexp) {
+    if (fs.existsSync(files_path)) {
+        if (fs.statSync(files_path).isDirectory()) {
+            _.each(fs.readdirSync(files_path), function (child_file) {
+                var remove_file = child_file.match(files_regexp);
+                if (remove_file) {
+                    fs.unlinkSync(path.join(files_path, child_file));
+                }
             });
-            fs.rmdirSync(itemPath);
         } else {
-            fs.unlinkSync(itemPath);
+            fs.unlinkSync(files_path);
+        }
+    }
+}
+
+function deleteDirRecursiveSync(files_path) {
+    if (fs.existsSync(files_path)) {
+        if (fs.statSync(files_path).isDirectory()) {
+            _.each(fs.readdirSync(files_path), function(child_files_path) {
+                deleteDirRecursiveSync(path.join(files_path, child_files_path));
+            });
+            fs.rmdirSync(files_path);
+        } else {
+            fs.unlinkSync(files_path);
         }
     }
 }

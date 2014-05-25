@@ -1,7 +1,6 @@
 var fs     = require('fs');
 var path   = require('path');
 var _      = require('underscore');
-var im     = require('imagemagick');
 var config = require('../../../../config/config/config.json');
 
 var self = module.exports = {};
@@ -12,8 +11,7 @@ self.agent_avatar = function (req, res) {
         var image_name = req.files.file.name;
 
         var path = __dirname + '/../../../../public/files/' + req.params.widget_uid + '/avatars/' + req.params.agent_uid;
-        // @todo Удалять потомков
-        deleteRecursiveSync(path);
+        deleteDirRecursiveSync(path);
 
         if (!image_name) {
             console.log('Error in process save file');
@@ -54,8 +52,7 @@ self.widget_logo = function (req, res) {
         var image_name = req.files.file.name;
 
         var path = __dirname + '/../../../../public/files/' + req.params.widget_uid;
-        // @todo Удалять потомков
-        //deleteRecursiveSync(path);
+        deleteFileByMaskSync(path, /logo?\w+\.png/i);
 
         if (!image_name) {
             console.log('Error in process save file');
@@ -90,10 +87,10 @@ self.widget_logo = function (req, res) {
 };
 
 // Рекурсивное создание деррикторий
-function mkdirs(path, callback){
-    var path = path.indexOf('\\') >= 0 ? path.replace('\\', '/') : path;
-    if (path.substr(path.length - 1) == '/') {
-        path = path.substr(0, path.length - 1);
+function mkdirs(dist_path, callback){
+    var dist_path = dist_path.indexOf('\\') >= 0 ? dist_path.replace('\\', '/') : dist_path;
+    if (dist_path.substr(dist_path.length - 1) == '/') {
+        dist_path = dist_path.substr(0, dist_path.length - 1);
     }
 
     function tryDirectory(dir, cb) {
@@ -133,18 +130,33 @@ function mkdirs(path, callback){
         });
     }
 
-    tryDirectory(path, callback);
+    tryDirectory(dist_path, callback);
 }
 
-function deleteRecursiveSync(itemPath) {
-    if (fs.existsSync(itemPath)) {
-        if (fs.statSync(itemPath).isDirectory()) {
-            _.each(fs.readdirSync(itemPath), function(childItemName) {
-                deleteRecursiveSync(path.join(itemPath, childItemName));
+function deleteFileByMaskSync(files_path, files_regexp) {
+    if (fs.existsSync(files_path)) {
+        if (fs.statSync(files_path).isDirectory()) {
+            _.each(fs.readdirSync(files_path), function (child_file) {
+                var remove_file = child_file.match(files_regexp);
+                if (remove_file) {
+                    fs.unlinkSync(path.join(files_path, child_file));
+                }
             });
-            fs.rmdirSync(itemPath);
         } else {
-            fs.unlinkSync(itemPath);
+            fs.unlinkSync(files_path);
+        }
+    }
+}
+
+function deleteDirRecursiveSync(files_path) {
+    if (fs.existsSync(files_path)) {
+        if (fs.statSync(files_path).isDirectory()) {
+            _.each(fs.readdirSync(files_path), function(child_files_path) {
+                deleteDirRecursiveSync(path.join(files_path, child_files_path));
+            });
+            fs.rmdirSync(files_path);
+        } else {
+            fs.unlinkSync(files_path);
         }
     }
 }
